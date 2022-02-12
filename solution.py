@@ -4,11 +4,10 @@ from socket import *
 import sys
 
 
-def webServer(port=5500):
+def webServer(port=5503):
     serverSocket = socket(AF_INET, SOCK_STREAM)
     #Prepare a server socket
-    serverSocket.bind(('127.0.0.1', port))
-    
+    serverSocket.bind(("127.0.0.1", port))
     #Fill in start
     serverSocket.listen()
     #Fill in end
@@ -16,25 +15,25 @@ def webServer(port=5500):
     while True:
         #Establish the connection
         print('Ready to serve...')
-        print("Hi")
         connectionSocket, addr = serverSocket.accept()
         print(f"Accepted connection request from {connectionSocket}:{addr}")
         #Fill in start      #Fill in end
-        
-
         try:
 
             try:
-                message = serverSocket.recv(1024)
+                message = connectionSocket.recv(20)
+                print(message)
                 #Fill in start    #Fill in end
                 filename = message.split()[1]
+                print(filename[1:])
                 f = open(filename[1:])
-                outputdata = message
+                outputdata = f.read()
+                
                 #Fill in start     #Fill in end
                 
                 #Send one HTTP header line into socket.
                 #Fill in start
-                connectionSocket.send('<h1>Header File</h1>')
+                connectionSocket.send('HTTP/1.1 200 OK\r\n\r\n'.encode())
                 #Fill in end
 
                 #Send the content of the requested file to the client
@@ -43,24 +42,23 @@ def webServer(port=5500):
 
                 connectionSocket.send("\r\n".encode())
                 connectionSocket.close()
-
             except IOError:
-            # Send response message for file not found (404)
-            #Fill in start
-                print('File not found! (Error 404)')
-            #Fill in end
+                # Send response message for file not found (404)
+                #Fill in start
+                print('404 not found!')
+                #Fill in end
 
 
-            #Close client socket
-            #Fill in start
+                #Close client socket
+                #Fill in start
                 serverSocket.close()
-            #Fill in end
-
+                #Fill in end
+        
         except (ConnectionResetError, BrokenPipeError):
             pass
 
-        serverSocket.close()
-        sys.exit()  # Terminate the program after sending the corresponding data
+    serverSocket.close()
+    sys.exit()  # Terminate the program after sending the corresponding data
 
 if __name__ == "__main__":
-    webServer(5500)
+  webServer(5503)
