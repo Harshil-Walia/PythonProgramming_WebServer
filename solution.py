@@ -45,7 +45,8 @@ def webServer(port=13331):
             except IOError:
                 # Send response message for file not found (404)
                 #Fill in start
-                print('404 not found!')
+                sys.stdout.write('404 not found!')
+                #print('404 not found!')
                 #Fill in end
 
 
